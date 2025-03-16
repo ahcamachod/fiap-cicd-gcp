@@ -4,7 +4,7 @@ BEGIN
 BEGIN TRANSACTION;
 
 insert into   `{PROJECT_ID}.fiap_cicd_{ENV}_agnv.tbl_data`
-SELECT * FROM `{PROJECT_ID}.fiap_cicd_{ENV}_agnv.view_data`;
+SELECT * FROM `{PROJECT_ID}.fiap_cicd_{ENV}_agnv.view_datas`;
 
 COMMIT TRANSACTION;
 
