@@ -1,5 +1,4 @@
-from datetime import datetime
-from google.cloud import bigquery_datatransfer, bigquery_datatransfer_v1
+from google.cloud import bigquery_datatransfer
 from google.protobuf import field_mask_pb2
 from google.protobuf.json_format import MessageToDict
 from google.cloud import bigquery
@@ -31,13 +30,12 @@ def create_scheduled_query(schedule_config):
     """
     Function to create new scheduled query. 
     Args
-    scheduled_config (dict): Dictionary having display name, query, schedule and the start_date
+    scheduled_config (dict): Dictionary having display name, query and the schedule
     """
     try:
         display_name = schedule_config["display_name"].replace('${ENV}',env)
         query = schedule_config["query"].replace('${ENV}',env)
         schedule = schedule_config["schedule"]
-        start_date = schedule_config["start_date"]
     except Exception as e:
         print(f"Failed to retrieve schedule, Error: {e}")    
         return    
@@ -50,9 +48,7 @@ def create_scheduled_query(schedule_config):
             "query": query
         },
         schedule=schedule,
-        schedule_options=bigquery_datatransfer_v1.types.ScheduleOptions(
-            start_time=datetime.fromisoformat(start_date))            
-        )
+    )
 
     try:
         transfer_config = transfer_client.create_transfer_config(
@@ -97,7 +93,6 @@ def update_scheduled_query(schedule_config, existing_schedule):
         display_name = schedule_config["display_name"].replace('${ENV}',env)
         query = schedule_config["query"].replace('${ENV}',env)
         schedule = schedule_config["schedule"]
-        start_date = schedule_config["start_date"]
     except Exception as e:
         print(f"Failed to retrieve schedule, Error: {e}")
         return 
@@ -106,7 +101,6 @@ def update_scheduled_query(schedule_config, existing_schedule):
         existing_query_name = existing_schedule["name"]
         existing_query = existing_schedule["query"]
         existing_query_schedule = existing_schedule["schedule"]
-        existing_query_start_date = existing_schedule["start_date"]
     except Exception as e:
         print(f"Failed to retrieve existing schedule for {display_name}, Error: {e}")
         return 
@@ -155,8 +149,7 @@ for config in configs:
         existing_schedules[existing_displayName] = {
             "name":existing_config['name'],
             "schedule":existing_config['schedule'] if 'schedule' in existing_config.keys() else 'NA',
-            "query":existing_config['params']['query'] if 'query' in existing_config.keys() else 'NA',
-            "start_date":existing_config['schedule_options'] if 'schedule_options' in existing_config.keys() else 'NA'
+            "query":existing_config['params']['query'] if 'query' in existing_config.keys() else 'NA'
             }
     except Exception as e:
         print(f"Failed to extract existing config {existing_displayName}, Error: {e}")
@@ -194,3 +187,4 @@ for subdir, dirs, files in os.walk(root_dir):
             
         except Exception as e:
             print(f"Failed to delete scheduled query: {e}")'''
+
