@@ -15,7 +15,7 @@ zone = sys.argv[4]
 service_account_name=sys.argv[5]
 root_dir = '/bq_scheduler/schedules/'+zone
 
-parent = transfer_client.common_location_path(project_id , "EU")
+parent = transfer_client.common_location_path(project_id , "US")
 pubsub_topic = f'projects/{project_id}/topics/{sys.argv[3]}'
 print('Pubsub Topic: ',pubsub_topic)
 
