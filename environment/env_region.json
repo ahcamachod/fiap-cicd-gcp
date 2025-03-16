@@ -1,0 +1,10 @@
+{
+    "project_id":"amer-a11-us-amer-{ENV}",
+    "Cloud_Build_Service_Account":"",
+    "Editor_Service_Account":"",
+    "Owner_Service_Account":"",
+    "Platform_Account":"",
+    "Cloud_Run_Service_Account":"",
+    "Storage_Object_Service_Account":"",
+    "Terraform_Service_Account":""
+ }
