@@ -6,7 +6,7 @@ steps:
   - |
      gcloud config set project $PROJECT_ID
      echo "project property is changed"
-     for i in $(ls -lrt ./modules/bigquery/views/* | awk '{print $9}')
+     for i in $(ls -lrt ./module/bigquery/views/* | awk '{print $9}')
      do
        sed -i -e s/\{PROJECT_ID\}/$PROJECT_ID/g $i
        sed -i -e s/\{ENV\}/${_ENV}/g $i
