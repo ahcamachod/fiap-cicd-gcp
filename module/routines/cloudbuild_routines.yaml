@@ -12,7 +12,7 @@ steps:
        sed -i -e s/\{ENV\}/${_ENV}/g $i    
      done
 
-     path=./module/routines/routines
+     path=./module/routines/routines/
      for i in $(cat ./module/routines/routines/exe_master_ddl.parm)
            do
                echo "DDL em execução ->   " $i	
