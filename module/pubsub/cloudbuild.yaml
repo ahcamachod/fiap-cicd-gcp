@@ -1,0 +1,11 @@
+steps:
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+    - -c
+    - |
+        gcloud pubsub topics create ${_PUBSUB_TOPIC}
+         
+options:
+  logging: CLOUD_LOGGING_ONLY

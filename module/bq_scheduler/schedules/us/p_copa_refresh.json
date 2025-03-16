@@ -1,0 +1,6 @@
+{
+    "display_name": "amer_bq_sched_copa_refresh_${ENV}",
+    "schedule": "every 4 hours from 11:30 to 23:30",
+    "query": "CALL `amer-a11-us-amer-${ENV}.amer_sisohub_bqdset_${ENV}_cdm_commerce.p_copa_refresh`();",
+    "start_date":"2025-01-01T00:00:00+00:00"
+ }

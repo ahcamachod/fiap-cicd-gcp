@@ -1,0 +1,16 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$SHORT_SHA', '-f', './modules/bq_scheduler/Dockerfile', './modules/bq_scheduler/']
+  id: 'build-image'
+
+- name: '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$SHORT_SHA'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+     python /bq_scheduler/utils/schedule_bq_procedure.py $PROJECT_ID ${_ENV} ${_PUBSUB_TOPIC} ${_ZONE}  ${_SERVICE_ACCOUNT}
+  id: 'bigquery-schedule'
+ 
+  
+options:
+  logging: CLOUD_LOGGING_ONLY

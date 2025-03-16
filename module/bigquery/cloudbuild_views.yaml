@@ -1,0 +1,61 @@
+steps:
+- name: 'gcr.io/cloud-builders/gsutil'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+     gcloud config set project $PROJECT_ID
+     echo "project property is changed"
+     for i in $(ls -lrt ./modules/bigquery/views/cdm_commerce/views_sk/* | awk '{print $9}')
+     do
+       sed -i -e s/\{PROJECT_ID\}/$PROJECT_ID/g $i
+       sed -i -e s/\{PUBLISH_ID\}/${_PUBLISH_ID}/g $i
+       sed -i -e s/\{PUBLISH_IDQ\}/${_PUBLISH_IDQ}/g $i
+       sed -i -e s/\{PUBLISH\}/${_PUBLISH}/g $i
+       sed -i -e s/\{PUBLISH_GB\}/${_PUBLISH_GB}/g $i
+       sed -i -e s/\{ITG\}/${_ITG}/g $i
+       sed -i -e s/\{ITGQ\}/${_ITGQ}/g $i
+       sed -i -e s/\{A07_ID\}/${_A07_ID}/g $i
+       sed -i -e s/\{A07_ENV\}/${_A07_ENV}/g $i
+       sed -i -e s/\{A18_ID\}/${_A18_ID}/g $i
+       sed -i -e s/\{ENV\}/${_ENV}/g $i
+       sed -i -e s/\{SALES_FACT\}/${_SALES_FACT}/g $i
+       sed -i -e s/\{SELLOUT_CA_PPD_DISTRIBUTOR_FACT\}/${_SELLOUT_CA_PPD_DISTRIBUTOR_FACT}/g $i
+       sed -i -e s/\{SELLTHRU_STORE_FACT\}/${_SELLTHRU_STORE_FACT}/g $i
+       sed -i -e s/\{SELLTHRU_INV_STORE_FACT\}/${_SELLTHRU_INV_STORE_FACT}/g $i
+       sed -i -e s/\{INVENTORY_FACT\}/${_INVENTORY_FACT}/g $i
+       sed -i -e s/\{TBL_SELLOUT_CA_PPD_DISTRIBUTOR_INV_FACT\}/${_TBL_SELLOUT_CA_PPD_DISTRIBUTOR_INV_FACT}/g $i
+       sed -i -e s/\{OAPASS_PROJECT_ID\}/${_OAPASS_PROJECT_ID}/g $i
+       sed -i -e s/\{OAPASS_PROJECT\}/${_OAPASS_PROJECT}/g $i
+     done
+
+     path=./modules/bigquery/views/cdm_commerce/views_sk/
+     for i in $(cat ./modules/bigquery/views/cdm_commerce/views_sk/exe_master_ddl.parm)
+           do
+               echo "DDL being processed ->   " $i	
+               echo "File being executed -> " $path$i
+               bq query --use_legacy_sql=false " $(cat $path$i) "
+               status=$?
+               if [ $status == 0 ]
+                 then echo "DDL Processed successfully"
+               else
+                       echo "DDL execution failed"
+                       exit 1
+               fi
+           done
+
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: [ 'build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$SHORT_SHA', '-f', './modules/views/Dockerfile', './modules/views/']
+#   id: 'build-image'
+
+# - name: '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$SHORT_SHA'
+#   entrypoint: 'bash'
+#   args:
+#   - '-c'
+#   - |
+#      python /views/python_scripts/upload_views_to_bq.py $PROJECT_ID ${_PUBLISH_ID} ${_A07_ID} ${_ENV} ${_ZONE}
+#   id: 'docker-upload-views-to-bq'
+    
+options:
+  logging:
+    CLOUD_LOGGING_ONLY    
