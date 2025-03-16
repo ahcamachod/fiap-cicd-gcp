@@ -1,5 +1,5 @@
 {
-    "project_id":"amer-a11-us-amer-{ENV}",
+    "project_id":"fiap-cicd-gcp-{ENV}",
     "Cloud_Build_Service_Account":"",
     "Editor_Service_Account":"",
     "Owner_Service_Account":"",
